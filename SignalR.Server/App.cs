@@ -20,7 +20,7 @@ namespace SignalR.Server
             _builder = WebApplication.CreateBuilder(args);
         }
 
-        public void Build()
+        public App Build()
         {
             Configure(_builder.Configuration);
             Configure(_builder.Logging);
@@ -29,16 +29,19 @@ namespace SignalR.Server
             _app = _builder.Build();
 
             Configure(_app);
+
+            return this;
         }
 
         public async Task RunAsync(CancellationToken token = default) =>
             await _app.RunAsync(token);
 
         private void Configure(WebApplication builder) =>
-            builder.MapHub<ImportStatusHub>("");
+            builder.MapHub<ImportStatusHub>("/import-status");
 
         private void Configure(IServiceCollection services) =>
-            services.AddSignalRCore();
+            services
+            .AddSignalR();
 
         private void Configure(IConfigurationBuilder builder)
         {
@@ -48,6 +51,10 @@ namespace SignalR.Server
                 .AddJsonFile("appsettings.json", true);
         }
 
-        private void Configure(ILoggingBuilder builder) { }
+        private void Configure(ILoggingBuilder builder) 
+        {
+            builder.ClearProviders();
+            builder.AddConsole();
+        }
     }
 }

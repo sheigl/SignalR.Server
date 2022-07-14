@@ -14,7 +14,6 @@ namespace SignalR.Server.Hubs
         public override async Task OnDisconnectedAsync(Exception ex)
         {
             await base.OnDisconnectedAsync(ex);
-            throw ex;
         }
 
         public async Task SendMessage(string id, string message)

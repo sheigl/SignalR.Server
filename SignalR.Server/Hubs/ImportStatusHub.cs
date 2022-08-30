@@ -28,6 +28,7 @@ namespace SignalR.Server.Hubs
         {
             _logger.LogInformation($"{id}: {message}");
             await Clients.All.SendAsync(id, message);
+            await Clients.All.SendAsync("ALL", message);
         }
     }
 }

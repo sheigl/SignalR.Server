@@ -36,12 +36,30 @@ namespace SignalR.Server
         public async Task RunAsync(CancellationToken token = default) =>
             await _app.RunAsync(token);
 
-        private void Configure(WebApplication builder) =>
-            builder.MapHub<ImportStatusHub>("/import-status");
+        private void Configure(WebApplication builder)
+        {
+            builder.UseCors("CorsPolicy");
 
-        private void Configure(IServiceCollection services) =>
+            builder
+                .MapHub<ImportStatusHub>("/import-status");
+        }
+            
+
+        private void Configure(IServiceCollection services)
+        {
             services
-            .AddSignalR();
+                .AddSignalR();
+
+            services.AddCors(options =>
+                {
+                options.AddPolicy("CorsPolicy", builder => builder
+                    .WithOrigins("http://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+        }
+            
 
         private void Configure(IConfigurationBuilder builder)
         {
